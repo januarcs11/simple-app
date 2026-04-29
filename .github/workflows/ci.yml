@@ -51,5 +51,5 @@ jobs:
           echo "Running new container..."
           docker run -d --name backend-flask -p 5001:5001 ${{ secrets.DOCKERHUB_USERNAME }}/cicd-githubnew:latest
         
-        EOF
+       EOF
      
