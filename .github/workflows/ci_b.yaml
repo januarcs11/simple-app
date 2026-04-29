@@ -40,17 +40,16 @@ jobs:
 
     - name: SSH Deploy to VM
       run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << EOF
-        echo "Logging into DockerHub..."
-        echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-        echo "Pulling latest image..."
-        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/cicd-githubnew:latest
-
-        echo "Stopping & removing old container..."
-        docker stop backend-flask || true
-        docker rm backend-flask || true
-
-        echo "Running new container..."
-        docker run -d --name backend-flask -p 5001:5001 ${{ secrets.DOCKERHUB_USERNAME }}/cicd-githubnew:latest
-      EOF     
+        ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+          echo "Logging into DockerHub..."
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          echo "Pulling latest image..."
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/cicd-githubnew:latest
+          echo "Stopping & removing old container..."
+          docker stop  || true
+          docker rm backend-flask || true
+          echo "Running new container..."
+          docker run -d --name backend-flask -p 5001:5001 ${{ secrets.DOCKERHUB_USERNAME }}/cicd-githubnew:latest
+        
+          EOF
+     
