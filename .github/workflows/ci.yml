@@ -43,14 +43,11 @@ jobs:
         ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
           echo "Logging into DockerHub..."
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
           echo "Pulling latest image..."
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/cicd-githubnew:latest
-
           echo "Stopping & removing old container..."
           docker stop  || true
           docker rm backend-flask || true
-
           echo "Running new container..."
           docker run -d --name backend-flask -p 5001:5001 ${{ secrets.DOCKERHUB_USERNAME }}/cicd-githubnew:latest
         
@@ -60,12 +57,12 @@ jobs:
         if: success()
         run: |
         curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-          -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -d text="✅ Fantastis Job success: ${{ github.repository }}"
-
+        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+        -d text="✅ Fantastis Job success: ${{ github.repository }}"
+   
     - name: Send Telegram (Failed)
         if: failure()
         run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-          -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -d text="❌ Job failed: ${{ github.repository }}"
+        curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+        -d text="❌ Job failed: ${{ github.repository }}"
