@@ -8,7 +8,7 @@ def home():
 
 @app.route('/about')
 def about():
-    return "Ini halaman Dengan flask github action oke "
+    return "Ini halaman Dengan flask test jenkins"
 
 if __name__ == '__main__':
     app.run(debug=True,host="0.0.0.0", port=5001)
